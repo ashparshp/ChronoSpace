@@ -19,6 +19,14 @@ mongoose.connect(process.env.DB_LOCATION, {
   autoIndex: true,
 });
 
+const formatDataSend = (user) => {
+  return {
+    profile_img: user.personal_info.profile_img,
+    username: user.personal_info.username,
+    fullname: user.personal_info.fullname,
+  };
+};
+
 const generateUsername = async (email) => {
   let username = email.split("@")[0];
 
@@ -26,7 +34,7 @@ const generateUsername = async (email) => {
     "personal_info.username": username,
   }).then((result) => result);
 
-  userExists ? username += nanoid().substring(0, 5) : "";
+  userExists ? (username += nanoid().substring(0, 5)) : "";
 
   return username;
 };
@@ -72,14 +80,13 @@ server.post("/signup", (req, res) => {
     user
       .save()
       .then((u) => {
-        return res.status(200).json({ user: u });
+        return res.status(200).json(formatDataSend(u));
       })
       .catch((err) => {
-        console.error("MongoDB Error:", err); // Log the full error object
         if (err.code === 11000) {
-          return res.status(500).json({ "error": "Email already exists" });
+          return res.status(500).json({ error: "Email already exists" });
         }
-        return res.status(500).json({ "error": err.message });
+        return res.status(500).json({ error: err.message });
       });
   });
 });
