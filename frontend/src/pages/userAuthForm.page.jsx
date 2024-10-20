@@ -1,12 +1,61 @@
+import { useRef } from "react";
 import AnimationWrapper from "../common/page-animation";
 import InputBox from "../components/input.component";
 import googleIcon from "../imgs/google.png";
 import { Link } from "react-router-dom";
 const UserAuthForm = ({ formType }) => {
+
+  const authForm =  useRef();
+
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+
+    let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+    // formData
+    let form = new FormData(authForm.current);
+    let formData = {};
+
+    for (let [key, value] of form.entries()) {
+      formData[key] = value;
+    }
+
+   // form validation
+
+    let { fullname, email, password } = formData;
+
+    if(fullname){
+      if (fullname.length < 3) {
+        return console.log({ "error": "Fullname must be at least 3 characters long" });
+      }
+    }
+
+  if (!email.length) {
+    return console.log({ "error": "Email is required" });
+  }
+
+  if (!emailRegex.test(email)) {
+    return console.log({ "error": "Invalid email" });
+  }
+
+  if (!passwordRegex.test(password)) {
+    return console.log({
+      "error":
+        "Password must be at least 6 characters long, and contain at least one uppercase letter, one lowercase letter, and one number",
+    });
+  } 
+
+  }
+
+
+
+
   return (
     <AnimationWrapper keyValue={formType}>
         <section className="h-cover flex items-center justify-center">
-        <form className="w-[80%] max-w-[400px]" action="">
+        <form ref={authForm} className="w-[80%] max-w-[400px]" action="">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {formType === "sign-in" ? "Welcome back!" : "Create an account"}
           </h1>
@@ -36,7 +85,11 @@ const UserAuthForm = ({ formType }) => {
             icon="fi-rr-lock"
           />
 
-          <button className="btn-dark center mt-14" type="submit">
+          <button className="btn-dark center mt-14" type="submit"
+
+          onClick={handleSubmit}
+
+          >
             {formType.replace("-", " ")}
           </button>
 
