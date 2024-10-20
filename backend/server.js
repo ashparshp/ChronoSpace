@@ -4,6 +4,7 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 // Importing schema
 import User from "./Schema/User.js";
@@ -15,6 +16,7 @@ let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
 server.use(express.json());
+server.use(cors());
 
 mongoose.connect(process.env.DB_LOCATION, {
   autoIndex: true,
@@ -73,30 +75,41 @@ server.post("/signup", (req, res) => {
     });
   }
 
-  bcrypt.hash(password, 10, async (err, hashed_password) => {
-    let username = await generateUsername(email);
+  User.findOne({ "personal_info.email": email })
+    .then((existingUser) => {
+      if (existingUser) {
+        return res.status(403).json({ "error": "Email already exists" });
+      }
 
-    let user = new User({
-      personal_info: {
-        fullname,
-        email,
-        password: hashed_password,
-        username,
-      },
-    });
-
-    user
-      .save()
-      .then((u) => {
-        return res.status(200).json(formatDataSend(u));
-      })
-      .catch((err) => {
-        if (err.code === 11000) {
-          return res.status(500).json({ "error": "Email already exists" });
+      bcrypt.hash(password, 10, async (err, hashed_password) => {
+        if (err) {
+          return res.status(500).json({ "error": "Error hashing password" });
         }
-        return res.status(500).json({ "error": err.message });
+
+        let username = await generateUsername(email);
+
+        let user = new User({
+          personal_info: {
+            fullname,
+            email,
+            password: hashed_password,
+            username,
+          },
+        });
+
+        user
+          .save()
+          .then((u) => {
+            return res.status(200).json(formatDataSend(u));
+          })
+          .catch((err) => {
+            return res.status(500).json({ "error": err.message });
+          });
       });
-  });
+    })
+    .catch((err) => {
+      return res.status(500).json({ "error": err.message });
+    });
 });
 
 server.post("/signin", (req, res) => {
