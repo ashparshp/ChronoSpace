@@ -1,12 +1,13 @@
 import { useState } from "react";
 
 import logo from "../imgs/logo.png";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const Navbar = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
 
   return (
+ <>
     <nav className="navbar">
       <Link to="/" className="flex-none w-10">
         <img src={logo} className="w-full" alt="logo" />
@@ -53,6 +54,9 @@ const Navbar = () => {
         </Link>
       </div>
     </nav>
+
+    <Outlet />
+ </>
   );
 };
 
