@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import admin from "firebase-admin";
 
 // Importing schema
 import User from "./Schema/User.js";
@@ -57,20 +58,20 @@ server.post("/signup", (req, res) => {
   if (fullname.length < 3) {
     return res
       .status(403)
-      .json({ "error": "Fullname must be at least 3 characters long" });
+      .json({ error: "Fullname must be at least 3 characters long" });
   }
 
   if (!email.length) {
-    return res.status(403).json({ "error": "Email is required" });
+    return res.status(403).json({ error: "Email is required" });
   }
 
   if (!emailRegex.test(email)) {
-    return res.status(403).json({ "error": "Invalid email" });
+    return res.status(403).json({ error: "Invalid email" });
   }
 
   if (!passwordRegex.test(password)) {
     return res.status(403).json({
-      "error":
+      error:
         "Password must be at least 6 characters long, and contain at least one uppercase letter, one lowercase letter, and one number",
     });
   }
@@ -78,12 +79,12 @@ server.post("/signup", (req, res) => {
   User.findOne({ "personal_info.email": email })
     .then((existingUser) => {
       if (existingUser) {
-        return res.status(403).json({ "error": "Email already exists" });
+        return res.status(403).json({ error: "Email already exists" });
       }
 
       bcrypt.hash(password, 10, async (err, hashed_password) => {
         if (err) {
-          return res.status(500).json({ "error": "Error hashing password" });
+          return res.status(500).json({ error: "Error hashing password" });
         }
 
         let username = await generateUsername(email);
@@ -103,12 +104,12 @@ server.post("/signup", (req, res) => {
             return res.status(200).json(formatDataSend(u));
           })
           .catch((err) => {
-            return res.status(500).json({ "error": err.message });
+            return res.status(500).json({ error: err.message });
           });
       });
     })
     .catch((err) => {
-      return res.status(500).json({ "error": err.message });
+      return res.status(500).json({ error: err.message });
     });
 });
 
@@ -120,18 +121,18 @@ server.post("/signin", (req, res) => {
   User.findOne({ "personal_info.email": email })
     .then((user) => {
       if (!user) {
-        return res.status(403).json({ "error": "Email not found" });
+        return res.status(403).json({ error: "Email not found" });
       }
 
       bcrypt.compare(password, user.personal_info.password, (err, result) => {
         if (err) {
           return res
             .status(403)
-            .json({ "error": "Error occurred while login please try again" });
+            .json({ error: "Error occurred while login please try again" });
         }
 
         if (!result) {
-          return res.status(403).json({ "error": "Incorrect password" });
+          return res.status(403).json({ error: "Incorrect password" });
         }
 
         return res.status(200).json(formatDataSend(user));
@@ -139,8 +140,12 @@ server.post("/signin", (req, res) => {
     })
     .catch((err) => {
       console.log(err.message);
-      return res.status(500).json({ "error": err.message });
+      return res.status(500).json({ error: err.message });
     });
+});
+
+server.post("/google-auth", async (req, res) => {
+  let { access_token } = req.body;
 });
 
 server.listen(PORT, () => {
