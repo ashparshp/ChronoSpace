@@ -21,7 +21,7 @@ const App = () => {
             }
           })()
         : { access_token: null }
-    );
+    ); 
   }, []);
 
   return (
