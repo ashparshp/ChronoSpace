@@ -6,7 +6,7 @@ import PublishForm from "../components/publish-form.component";
 
 const Editor = () => {
 
-    const [editorState, setEditorState] = useState("pub");
+    const [editorState, setEditorState] = useState("editor");
 
     let { userAuth: {access_token} } = useContext(UserContext);
 
