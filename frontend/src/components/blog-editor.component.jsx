@@ -6,6 +6,9 @@ import { uploadImage } from "../common/aws";
 import { useContext, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { EditorContext } from "../pages/editor.pages";
+import { useEffect } from "react";
+import EditorJS from "@editorjs/editorjs";
+import { tools } from "./tools.component";
 
 const BlogEditor = () => {
   let blogBannerRef = useRef();
@@ -14,7 +17,26 @@ const BlogEditor = () => {
     blog,
     blog: { title, banner, content, tags, des },
     setBlog,
+    textEditor,
+    setTextEditor,
+    setEditorState,
   } = useContext(EditorContext);
+
+  // useEffect
+  useEffect(() => {
+    setTextEditor(
+      new EditorJS({
+        holderId: "textEditor",
+        data: "",
+        tools: tools,
+        placeholder: "Write your blog here...",
+      })
+    );
+
+    if (textEditor) {
+      textEditor.innerHTML = content;
+    }
+  }, [content]);
 
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
@@ -52,6 +74,32 @@ const BlogEditor = () => {
     setBlog({ ...blog, title: input.value });
   };
 
+  const handlePublishEvent = () => {
+    if (!banner.length) {
+      return toast.error("Please upload a banner image!");
+    }
+
+    if (!title.length) {
+      return toast.error("Please enter a title!");
+    }
+
+    if (textEditor.isReady) {
+      textEditor
+        .save()
+        .then((data) => {
+          if (data.blocks.length) {
+            setBlog({ ...blog, content: data });
+            setEditorState("publish");
+          } else {
+            return toast.error("Please write something in the blog!");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -67,7 +115,9 @@ const BlogEditor = () => {
         </p>
 
         <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2">Publish</button>
+          <button className="btn-dark py-2" onClick={handlePublishEvent}>
+            Publish
+          </button>
           <button className="btn-light py-2">Save Draft</button>
         </div>
       </nav>
@@ -102,6 +152,8 @@ const BlogEditor = () => {
             ></textarea>
 
             <hr className="w-full opacity-10 my-5" />
+
+            <div id="textEditor" className="font-gelasio"></div>
           </div>
         </section>
       </AnimationWrapper>
