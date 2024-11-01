@@ -322,7 +322,7 @@ server.post("/create-blog", verifyJWT, (req, res) => {
         { _id: authorId },
         {
           $inc: { "account_info.total_posts": incrementVal },
-          $push: { "blogs": blog._id },
+          $push: { blogs: blog._id },
         }
       )
         .then((user) => {
