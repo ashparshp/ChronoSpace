@@ -22,12 +22,11 @@ const BlogEditor = () => {
     setEditorState,
   } = useContext(EditorContext);
 
-  // useEffect
   useEffect(() => {
     setTextEditor(
       new EditorJS({
         holderId: "textEditor",
-        data: "",
+        data: content,
         tools: tools,
         placeholder: "Write your blog here...",
       })
@@ -36,7 +35,7 @@ const BlogEditor = () => {
     if (textEditor) {
       textEditor.innerHTML = content;
     }
-  }, [content]);
+  }, []);
 
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
@@ -145,6 +144,7 @@ const BlogEditor = () => {
             </div>
 
             <textarea
+              defaultValue={title}
               placeholder="Blog Title"
               className="text-4xl font-medium w-full h-20 outline-none resize-none leading-tight placeholder:opacity-40"
               onKeyDown={handleTitleKeyDown}
