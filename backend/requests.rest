@@ -1,8 +1,24 @@
-POST http://localhost:3000/signup
+# POST http://localhost:3000/signup
+# Content-Type: application/json
+
+# {
+#   "fullname": "John Doe",
+#   "email": "johndoe11@gmail.com",
+#   "password": "John@123"
+# }
+
+# accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjIzNDY4YmZmNDkwZTUzYmRhYiIsImlhdCI6MTczMDQ3NTU1NX0.2C9xb37Jr8_KlSkEMoR99--IhK4SnPJr8R1ywM7JT_Q
+
+POST http://localhost:3000/create-blog
 Content-Type: application/json
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjIzNDY4YmZmNDkwZTUzYmRhYiIsImlhdCI6MTczMDQ3NTU1NX0.2C9xb37Jr8_KlSkEMoR99--IhK4SnPJr8R1ywM7JT_Q
 
 {
-    "fullname": "Ash Parsh",
-    "email": "ashparsh12@outlook.com",
-    "password": "ashparshA1"
+    "title": "My first blog",
+    "banner": "https://www.google.com",
+    "des": "This is my first blog",
+    "content": {
+        "blocks": [1, 2]
+    },
+    "tags": ["tech", "codingg"]
 }
