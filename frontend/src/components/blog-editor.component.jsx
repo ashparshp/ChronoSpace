@@ -3,11 +3,18 @@ import logo from "../imgs/logo.png";
 import AnimationWrapper from "../common/page-animation";
 import defaultBanner from "../imgs/blog banner.png";
 import { uploadImage } from "../common/aws";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import { EditorContext } from "../pages/editor.pages";
 
 const BlogEditor = () => {
   let blogBannerRef = useRef();
+
+  let {
+    blog,
+    blog: { title, banner, content, tags, des },
+    setBlog,
+  } = useContext(EditorContext);
 
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
@@ -20,7 +27,8 @@ const BlogEditor = () => {
           if (url) {
             toast.dismiss(loadingToast);
             toast.success("Image uploaded!");
-            blogBannerRef.current.src = url;
+
+            setBlog({ ...blog, banner: url });
           }
         })
         .catch((err) => {
@@ -28,6 +36,20 @@ const BlogEditor = () => {
           return toast.error(err);
         });
     }
+  };
+
+  const handleTitleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  const handleTitleChange = (e) => {
+    let input = e.target;
+    input.style.height = "auto";
+    input.style.height = input.scrollHeight + "px";
+
+    setBlog({ ...blog, title: input.value });
   };
 
   return (
@@ -41,7 +63,7 @@ const BlogEditor = () => {
           className="max-md:hidden text-black line-clamp-1 w-full
       "
         >
-          Blog Editor
+          {title.length ? title : "Untitled"}
         </p>
 
         <div className="flex gap-4 ml-auto">
@@ -59,7 +81,7 @@ const BlogEditor = () => {
               <label htmlFor="uploadBanner">
                 <img
                   ref={blogBannerRef}
-                  src={defaultBanner}
+                  src={banner ? banner : defaultBanner}
                   className="z-20 "
                 />
                 <input
@@ -71,6 +93,15 @@ const BlogEditor = () => {
                 />
               </label>
             </div>
+
+            <textarea
+              placeholder="Blog Title"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none leading-tight placeholder:opacity-40"
+              onKeyDown={handleTitleKeyDown}
+              onChange={handleTitleChange}
+            ></textarea>
+
+            <hr className="w-full opacity-10 my-5" />
           </div>
         </section>
       </AnimationWrapper>
