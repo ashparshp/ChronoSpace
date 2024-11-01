@@ -271,27 +271,29 @@ server.post("/create-blog", verifyJWT, (req, res) => {
   let { title, des, banner, tags, content, draft } = req.body;
 
   if (!title.length) {
-    return res.status(403).json({ error: "Title is required" });
+    return res.status(403).json({ error: "You must provide a title" });
   }
 
-  if (!des.length || des.length > 200) {
-    return res
-      .status(403)
-      .json({ error: "Description is required under 200 characters" });
-  }
+  if (!draft) {
+    if (!des.length || des.length > 200) {
+      return res
+        .status(403)
+        .json({ error: "Description is required under 200 characters" });
+    }
 
-  if (!banner.length) {
-    return res.status(403).json({ error: "Banner is required" });
-  }
+    if (!banner.length) {
+      return res.status(403).json({ error: "Banner is required" });
+    }
 
-  if (!tags.length || tags.length > 10) {
-    return res
-      .status(403)
-      .json({ error: "Tags are required but not more than 10" });
-  }
+    if (!tags.length || tags.length > 10) {
+      return res
+        .status(403)
+        .json({ error: "Tags are required but not more than 10" });
+    }
 
-  if (!content.blocks.length) {
-    return res.status(403).json({ error: "Content is required" });
+    if (!content.blocks.length) {
+      return res.status(403).json({ error: "Content is required" });
+    }
   }
 
   tags = tags.map((tag) => tag.toLowerCase());
