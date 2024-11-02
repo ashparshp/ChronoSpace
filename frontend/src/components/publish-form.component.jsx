@@ -109,7 +109,7 @@ const PublishForm = () => {
 
         setTimeout(() => {
           navigate("/");
-        }, 2000);
+        }, 500);
       })
       .catch(({ response }) => {
         e.target.classList.remove("disable");
