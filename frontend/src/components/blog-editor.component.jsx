@@ -153,66 +153,68 @@ const BlogEditor = () => {
   };
 
   return (
-    <>
-      <nav className="navbar">
-        <Link to="/">
-          <img src={logo} alt="logo" className="flex-none w-10" />
-        </Link>
+<>
+  <nav className="navbar">
+    <Link to="/">
+      <img src={logo} alt="logo" className="flex-none w-10" />
+    </Link>
 
-        <p
-          className="max-md:hidden text-black line-clamp-1 w-full
-      "
-        >
-          {title.length ? title : "Untitled"}
-        </p>
+    <p className="max-md:hidden text-black line-clamp-1 w-full">
+      {title.length ? title : "Untitled"}
+    </p>
 
-        <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2" onClick={handlePublishEvent}>
-            Publish
-          </button>
-          <button className="btn-light py-2" onClick={handleSaveDraft}>
-            Save Draft
-          </button>
+    <div className="flex gap-4 ml-auto">
+      <button className="btn-dark py-2" onClick={handlePublishEvent}>
+        Publish
+      </button>
+      <button className="btn-light py-2" onClick={handleSaveDraft}>
+        Save Draft
+      </button>
+    </div>
+  </nav>
+
+  <Toaster />
+
+  <AnimationWrapper>
+    <section>
+      <div className="mx-auto max-w-[800px] w-full px-4">
+        <div className="relative aspect-[16/9] bg-gray-200 border border-gray-300 rounded-lg shadow-md overflow-hidden hover:opacity-90 transition-opacity duration-200">
+          <label htmlFor="uploadBanner" className="cursor-pointer">
+            <img
+              ref={blogBannerRef}
+              src={banner ? banner : defaultBanner}
+              alt="banner"
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            />
+            <input
+              type="file"
+              id="uploadBanner"
+              hidden
+              accept=".png, .jpg, .jpeg"
+              onChange={handleBannerUpload}
+            />
+          </label>
         </div>
-      </nav>
 
-      <Toaster />
+        <textarea
+          defaultValue={title}
+          placeholder="Blog Title"
+          className="text-2xl font-semibold w-full h-12 mt-4 p-2 outline-none resize-none leading-snug placeholder-gray-500 placeholder-opacity-70 border-b-2 border-gray-300 focus:border-gray-500 transition-colors duration-200 rounded-md"
+          onKeyDown={handleTitleKeyDown}
+          onChange={handleTitleChange}
+        ></textarea>
 
-      <AnimationWrapper>
-        <section>
-          <div className="mx-auto max-w-[900px] w-full">
-            <div className="relative aspect-video hover:opacity-80 bg-white border-4 border-grey">
-              <label htmlFor="uploadBanner">
-                <img
-                  ref={blogBannerRef}
-                  src={banner ? banner : defaultBanner}
-                  className="z-20 "
-                />
-                <input
-                  type="file"
-                  id="uploadBanner"
-                  hidden
-                  accept=".png, .jpg, .jpeg"
-                  onChange={handleBannerUpload}
-                />
-              </label>
-            </div>
+        <hr className="w-full opacity-30 my-4 border-gray-300" />
 
-            <textarea
-              defaultValue={title}
-              placeholder="Blog Title"
-              className="text-4xl font-medium w-full h-20 outline-none resize-none leading-tight placeholder:opacity-40"
-              onKeyDown={handleTitleKeyDown}
-              onChange={handleTitleChange}
-            ></textarea>
+        <div
+          id="textEditor"
+          className="font-gelasio min-h-[220px] p-4 bg-gray-50 rounded-lg shadow-sm focus-within:shadow-lg transition-shadow duration-200 outline-none border border-gray-300"
+        ></div>
+      </div>
+    </section>
+  </AnimationWrapper>
+</>
 
-            <hr className="w-full opacity-10 my-5" />
-
-            <div id="textEditor" className="font-gelasio"></div>
-          </div>
-        </section>
-      </AnimationWrapper>
-    </>
   );
 };
 
