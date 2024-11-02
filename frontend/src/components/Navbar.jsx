@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 
 import logo from "../imgs/logo.png";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../App.jsx";
 import UserNavigationPanel from "./user-navigation.component.jsx";
 
@@ -9,6 +9,8 @@ const Navbar = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
 
   const [userNavPanel, setUserNavPanel] = useState(false);
+
+  let navigate = useNavigate();
 
   const {
     userAuth,
@@ -19,11 +21,18 @@ const Navbar = () => {
     setUserNavPanel(!userNavPanel);
   };
 
+  const hnadleSearch = (e) => {
+    let query = e.target.value;
+    if (e.key === "Enter" && query.length) {
+      navigate(`/search/${query}`);
+    }
+  };
   const handleBlur = () => {
     setTimeout(() => {
       setUserNavPanel(false);
     }, 200);
   };
+
   return (
     <>
       <nav className="navbar">
@@ -45,6 +54,7 @@ const Navbar = () => {
                 p-4 pl-6 pr-[12%] md:pr-6 rounded-full 
                 placeholder:text-dark-gray 
                 md:pl-12"
+              onKeyDown={hnadleSearch}
             />
             <i className="fi fi-rr-search absolute right-[10%] md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-gray pointer-events-none"></i>
           </div>
