@@ -8,8 +8,8 @@ import MinimalBlogPost from "../components/nobanner-blog-post.component";
 import { activeTabRef } from "../components/inpage-navigation.component";
 
 const HomePage = () => {
-  let [blogs, setBlogs] = useState([]);
-  let [trendingBlogs, setTrendingBlogs] = useState([]);
+  let [blogs, setBlogs] = useState(null);
+  let [trendingBlogs, setTrendingBlogs] = useState(null);
   let [pageState, setPageState] = useState("home");
 
   let categories = [
@@ -28,6 +28,19 @@ const HomePage = () => {
   const fetchLatestBlogs = () => {
     axios
       .get(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs")
+      .then(({ data }) => {
+        setBlogs(data.blogs);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const fetchBlogsByCategory = () => {
+    axios
+      .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
+        tag: pageState,
+      })
       .then(({ data }) => {
         setBlogs(data.blogs);
       })
@@ -65,7 +78,8 @@ const HomePage = () => {
 
     if (pageState === "home") {
       fetchLatestBlogs();
-      return;
+    } else {
+      fetchBlogsByCategory();
     }
 
     if (!trendingBlogs) {

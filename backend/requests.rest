@@ -9,4 +9,9 @@
 
 # accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjIzNDY4YmZmNDkwZTUzYmRhYiIsImlhdCI6MTczMDQ3NTU1NX0.2C9xb37Jr8_KlSkEMoR99--IhK4SnPJr8R1ywM7JT_Q
 
-GET http://localhost:3000/trending-blogs
+GET http://localhost:3000/search-blogs
+Content-Type: application/json
+
+{
+  "tag": "investing"
+}
