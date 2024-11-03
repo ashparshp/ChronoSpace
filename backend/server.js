@@ -358,10 +358,25 @@ server.post("/search-users", (req, res) => {
     "personal_info.username": new RegExp(query, "i"),
   })
     .limit(50)
-    .select("personal_info.username personal_info.fullname personal_info.profile_img -_id")
+    .select(
+      "personal_info.username personal_info.fullname personal_info.profile_img -_id"
+    )
 
     .then((users) => {
       return res.status(200).json({ users });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+server.post("/get-profile", (req, res) => {
+  let { username } = req.body;
+
+  User.findOne({ "personal_info.username": username })
+    .select("-personal_info.password -google_auth -updatedAt -blogs")
+    .then((user) => {
+      return res.status(200).json(user);
     })
     .catch((err) => {
       return res.status(500).json({ error: err.message });
