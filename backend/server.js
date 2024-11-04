@@ -319,12 +319,12 @@ server.get("/trending-blogs", (req, res) => {
 });
 
 server.post("/search-blogs", (req, res) => {
-  let { tag, query, author, page } = req.body;
+  let { tag, query, author, page, limit, eliminate_blog } = req.body;
 
   let findQuery;
 
   if (tag) {
-    findQuery = { tags: tag, draft: false };
+    findQuery = { tags: tag, draft: false, blog_id: { $ne: eliminate_blog } };
   } else if (query) {
     findQuery = {
       draft: false,
@@ -334,7 +334,7 @@ server.post("/search-blogs", (req, res) => {
     findQuery = { author, draft: false };
   }
 
-  let maxLimit = 2;
+  let maxLimit = limit ? limit : 2;
 
   Blog.find(findQuery)
     .populate(
