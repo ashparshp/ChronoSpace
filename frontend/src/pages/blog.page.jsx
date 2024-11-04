@@ -29,6 +29,8 @@ const BlogPage = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [islikedByUser, setLikedByUser] = useState(false);
+
   const {
     title,
     content,
@@ -78,7 +80,9 @@ const BlogPage = () => {
       {loading ? (
         <Loader />
       ) : (
-        <BlogContext.Provider value={{ blog, setBlog }}>
+        <BlogContext.Provider
+          value={{ blog, setBlog, islikedByUser, setLikedByUser }}
+        >
           <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
             <img src={banner} className="aspect-video" />
 
@@ -107,15 +111,13 @@ const BlogPage = () => {
             <BlogInteraction />
 
             <div className="mt-12 font-gelasio blog-page-content">
-              {
-              content[0].blocks.map((block, i) => {
+              {content[0].blocks.map((block, i) => {
                 return (
                   <div key={i} className="my-4 md:my-8">
                     <BlogContent block={block} />
                   </div>
                 );
-              })
-              }
+              })}
             </div>
 
             <BlogInteraction />
