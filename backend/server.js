@@ -615,8 +615,10 @@ server.post("/add-comment", verifyJWT, (req, res) => {
       { _id },
       {
         $push: { comments: commentFile._id },
-        $inc: { "activity.total_comments": 1 },
-        "activity.total_parent_comments": 1,
+        $inc: {
+          "activity.total_comments": 1,
+          "activity.total_parent_comments": 1,
+        },
       }
     ).then((blog) => {
       console.log("New comment added");
