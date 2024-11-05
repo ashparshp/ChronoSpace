@@ -19,6 +19,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
           <p className="min-w-fit">{getDay(commentedAt)}</p>
         </div>
         <p className="font-gelasio text-xl ml-3">{comment}</p>
+        <button className="underline">Reply</button>
       </div>
     </div>
   );
