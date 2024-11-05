@@ -595,20 +595,24 @@ server.post("/isliked-by-user", verifyJWT, (req, res) => {
 server.post("/add-comment", verifyJWT, (req, res) => {
   let user_id = req.user;
 
-  let { _id, comment, blog_author } = req.body;
+  let { _id, comment, blog_author, replying_to } = req.body;
 
   if (!comment.length) {
     return res.status(403).json({ error: "Write something to comment" });
   }
 
-  let commentObj = new Comment({
+  let commentObj = {
     blog_id: _id,
     blog_author,
     comment,
     commented_by: user_id,
-  });
+  };
 
-  commentObj.save().then((commentFile) => {
+  if (replying_to) {
+    commentObj.parent = replying_to;
+  }
+
+  new Comment(commentObj).save().then(async (commentFile) => {
     let { comment, commentedAt, children } = commentFile;
 
     Blog.findOneAndUpdate(
@@ -617,7 +621,7 @@ server.post("/add-comment", verifyJWT, (req, res) => {
         $push: { comments: commentFile._id },
         $inc: {
           "activity.total_comments": 1,
-          "activity.total_parent_comments": 1,
+          "activity.total_parent_comments": replying_to ? 0 : 1,
         },
       }
     ).then((blog) => {
@@ -625,12 +629,23 @@ server.post("/add-comment", verifyJWT, (req, res) => {
     });
 
     let notificationObj = {
-      type: "comment",
+      type: replying_to ? "reply" : "comment",
       blog: _id,
       notification_for: blog_author,
       user: user_id,
       comments: commentFile._id,
     };
+
+    if (replying_to) {
+      notificationObj.replied_on_comment = replying_to;
+
+      await Comment.findOneAndUpdate(
+        { _id: replying_to },
+        { $push: { children: commentFile._id } }
+      ).then((replyingToCommentDoc) => {
+        notificationObj.notification_for = replyingToCommentDoc.commented_by;
+      });
+    }
 
     new Notification(notificationObj)
       .save()
