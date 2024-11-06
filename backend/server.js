@@ -712,6 +712,73 @@ server.post("/get-replies", (req, res) => {
     });
 });
 
+const deleteComments = (_id) => {
+  Comment.findOneAndDelete({ _id }).then((comment) => {
+    if (comment.parent) {
+      Comment.findOneAndUpdate(
+        { _id: comment.parent },
+        { $pull: { children: _id } }
+      )
+        .then((data) => {
+          console.log("Comment deleted");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+
+    Notification.findOneAndDelete({ comments: _id })
+      .then(() => {
+        console.log("Notification deleted");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    Notification.findOneAndDelete({ reply: _id })
+      .then(() => {
+        console.log("reply notification deleted");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    Blog.findOneAndUpdate(
+      { _id: comment.blog_id },
+      {
+        $pull: { comments: _id },
+        $inc: { "activity.total_comments": -1 },
+        "activity.total_parent_comments": comment.parent ? 0 : -1,
+      }
+    )
+      .then((blog) => {
+        if (comment.children.length) {
+          comment.children.map((replies) => {
+            deleteComments(replies);
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  });
+};
+
+server.post("/delete-comment", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { _id } = req.body;
+
+  Comment.findOne({ _id }).then((comment) => {
+    if (user_id == comment.commented_by || user_id == comment.blog_author) {
+      deleteComments(_id);
+
+      return res.status(200).json({ message: "Comment deleted" });
+    } else {
+      return res.status(403).json({ error: "You can't delete this comment" });
+    }
+  });
+});
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
