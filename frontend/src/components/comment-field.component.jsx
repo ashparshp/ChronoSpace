@@ -78,6 +78,8 @@ const CommentField = ({
           commentsArr.splice(index + 1, 0, data);
 
           newCommentArr = commentsArr;
+
+          setReplying(false);
         } else {
           data.childrenLevel = 0;
 
