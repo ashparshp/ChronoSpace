@@ -207,21 +207,21 @@ const CommentCard = ({ index, leftVal, commentData }) => {
           ) : (
             ""
           )}
-
-          {isReplying ? (
-            <div className="mt-8">
-              <CommentField
-                action="reply"
-                index={index}
-                replyingTo={_id}
-                setReplying={setReplying}
-              />
-            </div>
-          ) : (
-            ""
-          )}
         </div>
+        {isReplying ? (
+          <div className="mt-8 ml-3">
+            <CommentField
+              action="reply"
+              index={index}
+              replyingTo={_id}
+              setReplying={setReplying}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
+
     </div>
   );
 };
