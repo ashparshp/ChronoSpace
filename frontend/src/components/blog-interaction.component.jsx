@@ -76,8 +76,8 @@ const BlogInteraction = () => {
         )
         .then(({ data }) => {
           const message = data.liked_by_user
-            ? "You liked this!"
-            : "You unliked this!";
+            ? ""
+            : "";
           const icon = data.liked_by_user ? "👍" : "👎";
 
           toast.success(`${icon} ${message}`, {

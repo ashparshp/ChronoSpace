@@ -3,15 +3,24 @@
 
 # {
 #   "fullname": "John Doe",
-#   "email": "johndoe11@gmail.com",
+#   "email": "johndoe21@gmail.com",
 #   "password": "John@123"
 # }
 
-# accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjIzNDY4YmZmNDkwZTUzYmRhYiIsImlhdCI6MTczMDQ3NTU1NX0.2C9xb37Jr8_KlSkEMoR99--IhK4SnPJr8R1ywM7JT_Q
-
-GET http://localhost:3000/search-blogs
+POST http://localhost:3000/signin
 Content-Type: application/json
 
 {
-  "tag": "investing"
+  "email": "johndoe21@gmail.com",
+  "password": "John@1234"
 }
+
+# accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjIzNDY4YmZmNDkwZTUzYmRhYiIsImlhdCI6MTczMDQ3NTU1NX0.2C9xb37Jr8_KlSkEMoR99--IhK4SnPJr8R1ywM7JT_Q
+# accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmMzNGI0NWEyZWRhNmJlMmViYzIyNiIsImlhdCI6MTczMDk1MDMyNH0.RexPwXTLgzRXvnxXZ16u-MNjVdNBjDOaM4u5vD29ZJg
+
+# GET http://localhost:3000/search-blogs
+# Content-Type: application/json
+
+# {
+#   "tag": "investing"
+# }

@@ -267,6 +267,66 @@ server.post("/google-auth", async (req, res) => {
     });
 });
 
+server.post("/change-password", verifyJWT, (req, res) => {
+  let { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword.length || !newPassword.length) {
+    return res.status(403).json({ error: "Please fill all the fields" });
+  }
+
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(403).json({
+      error:
+        "Password should contain atleast one uppercase, one lowercase and one number",
+    });
+  }
+
+  User.findOne({ _id: req.user })
+    .then((user) => {
+      if (user.google_auth) {
+        return res.status(403).json({
+          error: "You can't change password of google authenticated account",
+        });
+      }
+
+      bcrypt.compare(
+        currentPassword,
+        user.personal_info.password,
+        (err, result) => {
+          if (err) {
+            return res.status(500).json({ error: "Error occurred" });
+          }
+
+          if (!result) {
+            return res
+              .status(403)
+              .json({ error: "Incorrect current password" });
+          }
+
+          bcrypt.hash(newPassword, 10, (err, hashed_password) => {
+            if (err) {
+              return res.status(500).json({ error: "Error occurred" });
+            }
+
+            User.findOneAndUpdate(
+              { _id: req.user },
+              { "personal_info.password": hashed_password }
+            )
+              .then((u) => {
+                return res.status(200).json({ message: "Password changed" });
+              })
+              .catch((err) => {
+                return res.status(500).json({ error: err.message });
+              });
+          });
+        }
+      );
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
+
 server.post("/latest-blogs", (req, res) => {
   let { page } = req.body;
 
