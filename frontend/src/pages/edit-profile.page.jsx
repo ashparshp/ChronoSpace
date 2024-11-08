@@ -198,24 +198,27 @@ const EditProfile = () => {
                   placeholder="Username"
                   icon="fi-rr-at"
                 />
+                <div className="p-4 rounded-lg bg-gradient-to-br from-gray-100 to-white shadow-lg shadow-gray-300 border border-gray-300 max-w-md">
+                  <p className="text-gray-700 text-sm font-medium">
+                    Username will be used to search for users and will be
+                    visible to all users.
+                  </p>
+                </div>
 
-                <p className="text-dark-grey -mt-3">
-                  Username will use to search user and will be visible to all
-                  users
-                </p>
+                <div>
+                  <textarea
+                    name="bio"
+                    maxLength={bioLimit}
+                    defaultValue={bio}
+                    className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5"
+                    placeholder="Bio"
+                    onChange={handleCharacterChange}
+                  />
 
-                <textarea
-                  name="bio"
-                  maxLength={bioLimit}
-                  defaultValue={bio}
-                  className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5"
-                  placeholder="Bio"
-                  onChange={handleCharacterChange}
-                />
-
-                <p className="mt-1 text-dark-grey">
-                  {characterLeft} characters left
-                </p>
+                  <p className="mt-1 text-dark-grey">
+                    {characterLeft} characters left
+                  </p>
+                </div>
               </div>
               <p className="my-6 text-dark-grey">
                 Add your social handles below
