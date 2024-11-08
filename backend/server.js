@@ -96,7 +96,6 @@
     return username;
   };
 
-  // upload image url root
   server.get("/get-upload-url", (req, res) => {
     generateUploadURL()
       .then((url) => res.status(200).json({ uploadURL: url }))
@@ -111,7 +110,6 @@
 
     email = email.toLowerCase();
 
-    // Validating the data from frontend
     if (fullname.length < 3) {
       return res
         .status(403)

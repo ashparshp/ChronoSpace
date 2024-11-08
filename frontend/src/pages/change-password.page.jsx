@@ -89,7 +89,7 @@ const ChangePassword = () => {
             className="btn-dark px-10"
             type="submit"
           >
-            Change Button
+            Change Password
           </button>
         </div>
       </form>
