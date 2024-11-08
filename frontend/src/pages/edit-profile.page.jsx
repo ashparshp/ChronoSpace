@@ -120,7 +120,8 @@ const EditProfile = () => {
       formData[key] = value;
     }
 
-    let { username, twitter, youtube, github, instagram, website } = formData;
+    let { username, twitter, youtube, github, instagram, website, facebook } =
+      formData;
 
     if (username.length < 3) {
       return toast.error("Username must be atleast 3 characters long");
@@ -129,6 +130,52 @@ const EditProfile = () => {
     if (bio.length > bioLimit) {
       return toast.error(`Bio must be less than ${maxLength} characters`);
     }
+
+    const loadingToast = toast.loading("Updating...");
+    e.target.setAttribute("disabled", true);
+
+    axios
+      .post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/update-profile",
+        {
+          username,
+          bio,
+          social_links: {
+            twitter,
+            facebook,
+            youtube,
+            github,
+            instagram,
+            website,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
+      .then(({ data }) => {
+        if (userAuth.username != data.username) {
+          const newUserAuth = {
+            ...userAuth,
+            username: data.username,
+          };
+
+          storeInSession("user", JSON.stringify(newUserAuth));
+
+          setUserAuth(newUserAuth);
+        }
+
+        toast.dismiss(loadingToast);
+        e.target.removeAttribute("disabled");
+        toast.success("Profile updated!");
+      })
+      .catch(({ response }) => {
+        toast.dismiss(loadingToast);
+        e.target.removeAttribute("disabled");
+        toast.error(response.data.error);
+      });
   };
 
   return (

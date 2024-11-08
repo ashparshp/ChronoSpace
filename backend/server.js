@@ -551,6 +551,7 @@ server.post("/update-profile", verifyJWT, (req, res) => {
       return res.status(500).json({ error: err.message });
     });
 });
+
 server.post("/create-blog", verifyJWT, (req, res) => {
   let authorId = req.user;
 
