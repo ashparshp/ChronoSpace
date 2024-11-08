@@ -120,7 +120,7 @@ const EditProfile = () => {
       formData[key] = value;
     }
 
-    let { username, twitter, youtube, github, instagram, website, facebook } =
+    let { username, bio, twitter, youtube, github, instagram, website, facebook } =
       formData;
 
     if (username.length < 3) {
