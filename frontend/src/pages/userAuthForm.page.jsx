@@ -21,6 +21,7 @@ const UserAuthForm = ({ formType }) => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
       .then(({ data }) => {
+        console.log("Backend response data:", data);
         storeInSession("user", JSON.stringify(data));
         setUserAuth(data);
       })
