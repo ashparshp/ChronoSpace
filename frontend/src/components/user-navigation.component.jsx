@@ -6,7 +6,7 @@ import { removeFromSession } from "../common/session";
 
 const UserNavigationPanel = () => {
   const {
-    userAuth: { username },
+    userAuth: { username, isAdmin },
     setUserAuth,
   } = useContext(UserContext);
 
@@ -24,25 +24,23 @@ const UserNavigationPanel = () => {
         className="absolute bg-white right-0 border border-grey w-60
      duration-200"
       >
-        <Link to="/editor" className="flex gap-2 link md:hidden pl-8 py-4">
-          <i className="fi fi-rr-edit"></i>
-          <span>Write</span>
-        </Link>
+        {isAdmin ? (
+          <Link to="/editor" className="flex gap-2 link md:hidden pl-8 py-4">
+            <i className="fi fi-rr-edit"></i>
+            <span>Write</span>
+          </Link>
+        ) : ""}
 
         <Link to={`/user/${username}`} className=" link pl-8 py-4">
           Profile
         </Link>
-
         <Link to="/dashboard/blogs" className=" link pl-8 py-4">
           Dashboard
         </Link>
-
         <Link to="/settings/edit-profile" className=" link pl-8 py-4">
           Settings
         </Link>
-
         <span className="absolute border-t border-grey w-[100%]"></span>
-
         <button
           className="text-left w-full pl-8 py-4 p-4 hover:bg-grey"
           onClick={signOutUser}

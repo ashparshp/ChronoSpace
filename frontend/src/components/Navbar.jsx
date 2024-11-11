@@ -18,7 +18,12 @@ const Navbar = () => {
   let { theme, setTheme } = useContext(ThemeContext);
   const {
     userAuth,
-    userAuth: { access_token, profile_img, new_notification_available },
+    userAuth: {
+      access_token,
+      profile_img,
+      new_notification_available,
+      isAdmin,
+    },
     setUserAuth,
   } = useContext(UserContext);
 
@@ -104,10 +109,14 @@ const Navbar = () => {
             <i className="fi fi-rr-search text-xl"></i>
           </button>
 
-          <Link to="/editor" className="hidden md:flex gap-2 link">
-            <i className="fi fi-rr-edit"></i>
-            <span>Write</span>
-          </Link>
+          {isAdmin ? (
+            <Link to="/editor" className="hidden md:flex gap-2 link">
+              <i className="fi fi-rr-edit"></i>
+              <span>Write</span>
+            </Link>
+          ) : (
+            ""
+          )}
           <button
             className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10"
             onClick={changeTheme}

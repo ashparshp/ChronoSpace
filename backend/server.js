@@ -66,13 +66,14 @@ const verifyJWT = (req, res, next) => {
     }
 
     req.user = user.id;
+    req.admin = user.admin;
     next();
   });
 };
 
 const formatDataSend = (user) => {
   const access_token = jwt.sign(
-    { id: user._id },
+    { id: user._id, admin: user.admin },
     process.env.SECRET_ACCESS_KEY
   );
 
@@ -81,6 +82,7 @@ const formatDataSend = (user) => {
     profile_img: user.personal_info.profile_img,
     username: user.personal_info.username,
     fullname: user.personal_info.fullname,
+    isAdmin: user.admin,
   };
 };
 
@@ -552,95 +554,100 @@ server.post("/update-profile", verifyJWT, (req, res) => {
 
 server.post("/create-blog", verifyJWT, (req, res) => {
   let authorId = req.user;
+  let isAdmin = req.admin;
 
-  let { title, des, banner, tags, content, draft, id } = req.body;
+  if (isAdmin) {
+    let { title, des, banner, tags, content, draft, id } = req.body;
 
-  if (!title.length) {
-    return res.status(403).json({ error: "You must provide a title" });
-  }
-
-  if (!draft) {
-    if (!des.length || des.length > 200) {
-      return res
-        .status(403)
-        .json({ error: "Description is required under 200 characters" });
+    if (!title.length) {
+      return res.status(403).json({ error: "You must provide a title" });
     }
 
-    if (!banner.length) {
-      return res.status(403).json({ error: "Banner is required" });
-    }
-
-    if (!tags.length || tags.length > 10) {
-      return res
-        .status(403)
-        .json({ error: "Tags are required but not more than 10" });
-    }
-
-    if (!content.blocks.length) {
-      return res.status(403).json({ error: "Content is required" });
-    }
-  }
-
-  tags = tags.map((tag) => tag.toLowerCase());
-
-  let blog_id =
-    id ||
-    title
-      .replace(/[^a-zA-Z0-9]/g, " ")
-      .replace(/\s+/g, "-")
-      .trim() + nanoid();
-
-  if (id) {
-    Blog.findOneAndUpdate(
-      {
-        blog_id,
-      },
-      { title, des, banner, tags, content, draft: draft ? draft : false }
-    )
-      .then(() => {
-        return res.status(200).json({ id: blog_id });
-      })
-      .catch((err) => {
+    if (!draft) {
+      if (!des.length || des.length > 200) {
         return res
-          .status(500)
-          .json({ error: "Failed to update total posts number" });
+          .status(403)
+          .json({ error: "Description is required under 200 characters" });
+      }
+
+      if (!banner.length) {
+        return res.status(403).json({ error: "Banner is required" });
+      }
+
+      if (!tags.length || tags.length > 10) {
+        return res
+          .status(403)
+          .json({ error: "Tags are required but not more than 10" });
+      }
+
+      if (!content.blocks.length) {
+        return res.status(403).json({ error: "Content is required" });
+      }
+    }
+
+    tags = tags.map((tag) => tag.toLowerCase());
+
+    let blog_id =
+      id ||
+      title
+        .replace(/[^a-zA-Z0-9]/g, " ")
+        .replace(/\s+/g, "-")
+        .trim() + nanoid();
+
+    if (id) {
+      Blog.findOneAndUpdate(
+        {
+          blog_id,
+        },
+        { title, des, banner, tags, content, draft: draft ? draft : false }
+      )
+        .then(() => {
+          return res.status(200).json({ id: blog_id });
+        })
+        .catch((err) => {
+          return res
+            .status(500)
+            .json({ error: "Failed to update total posts number" });
+        });
+    } else {
+      let blog = new Blog({
+        title,
+        des,
+        banner,
+        content,
+        tags,
+        author: authorId,
+        blog_id: blog_id,
+        draft: Boolean(draft),
       });
+
+      blog
+        .save()
+        .then((blog) => {
+          let incrementVal = draft ? 0 : 1;
+
+          User.findOneAndUpdate(
+            { _id: authorId },
+            {
+              $inc: { "account_info.total_posts": incrementVal },
+              $push: { blogs: blog._id },
+            }
+          )
+            .then((user) => {
+              return res.status(200).json({ id: blog.blog_id });
+            })
+            .catch((err) => {
+              return res
+                .status(500)
+                .json({ error: "Failed to update total posts number" });
+            });
+        })
+        .catch((err) => {
+          return res.status(500).json({ error: err.message });
+        });
+    }
   } else {
-    let blog = new Blog({
-      title,
-      des,
-      banner,
-      content,
-      tags,
-      author: authorId,
-      blog_id: blog_id,
-      draft: Boolean(draft),
-    });
-
-    blog
-      .save()
-      .then((blog) => {
-        let incrementVal = draft ? 0 : 1;
-
-        User.findOneAndUpdate(
-          { _id: authorId },
-          {
-            $inc: { "account_info.total_posts": incrementVal },
-            $push: { blogs: blog._id },
-          }
-        )
-          .then((user) => {
-            return res.status(200).json({ id: blog.blog_id });
-          })
-          .catch((err) => {
-            return res
-              .status(500)
-              .json({ error: "Failed to update total posts number" });
-          });
-      })
-      .catch((err) => {
-        return res.status(500).json({ error: err.message });
-      });
+    return res.status(403).json({ error: "You are not authorized" });
   }
 });
 
@@ -1061,31 +1068,36 @@ server.post("/user-written-blogs-count", verifyJWT, (req, res) => {
 
 server.post("/delete-blog", verifyJWT, (req, res) => {
   let user_id = req.user;
+  let isAdmin = req.admin;
   let { blog_id } = req.body;
 
-  Blog.findOneAndDelete({ blog_id })
-    .then((blog) => {
-      Notification.deleteMany({ blog: blog._id }).then((data) =>
-        console.log("Notifications deleted")
-      );
+  if (isAdmin) {
+    Blog.findOneAndDelete({ blog_id })
+      .then((blog) => {
+        Notification.deleteMany({ blog: blog._id }).then((data) =>
+          console.log("Notifications deleted")
+        );
 
-      Comment.deleteMany({ blog_id: blog._id }).then((data) =>
-        console.log("Comments deleted")
-      );
+        Comment.deleteMany({ blog_id: blog._id }).then((data) =>
+          console.log("Comments deleted")
+        );
 
-      User.findOneAndUpdate(
-        { _id: user_id },
-        {
-          $pull: { blog: blog._id },
-          $inc: { "account_info.total_posts": blog.draft ? 0 : -1 },
-        }
-      ).then((user) => console.log("Blog deleted"));
+        User.findOneAndUpdate(
+          { _id: user_id },
+          {
+            $pull: { blog: blog._id },
+            $inc: { "account_info.total_posts": blog.draft ? 0 : -1 },
+          }
+        ).then((user) => console.log("Blog deleted"));
 
-      return res.status(200).json({ status: "done" });
-    })
-    .catch((err) => {
-      return res.status(500).json({ error: err.message });
-    });
+        return res.status(200).json({ status: "done" });
+      })
+      .catch((err) => {
+        return res.status(500).json({ error: err.message });
+      });
+  } else {
+    return res.status(403).json({ error: "You are not authorized" });
+  }
 });
 
 server.listen(PORT, () => {
