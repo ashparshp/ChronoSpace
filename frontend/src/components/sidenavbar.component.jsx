@@ -102,7 +102,7 @@ const SideNav = () => {
 
             {isAdmin ? (
               <NavLink
-                to="/dashboard/editor"
+                to="/editor"
                 onClick={(e) => setPageState(e.target.innerText)}
                 className="sidebar-link"
               >
