@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 
-import logo from "../imgs/logo.png";
+import darkLogo from "../imgs/logo-dark.png";
+import lightLogo from "../imgs/logo-light.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { UserContext } from "../App.jsx";
+import { ThemeContext, UserContext } from "../App.jsx";
 import UserNavigationPanel from "./user-navigation.component.jsx";
 import axios from "axios";
+import { storeInSession } from "../common/session.jsx";
 
 const Navbar = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -13,6 +15,7 @@ const Navbar = () => {
 
   let navigate = useNavigate();
 
+  let { theme, setTheme } = useContext(ThemeContext);
   const {
     userAuth,
     userAuth: { access_token, profile_img, new_notification_available },
@@ -52,11 +55,22 @@ const Navbar = () => {
     }, 200);
   };
 
+  const changeTheme = () => {
+    let newTheme = theme == "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.body.setAttribute("data-theme", newTheme);
+    storeInSession("theme", newTheme);
+  };
+
   return (
     <>
       <nav className="navbar z-50">
         <Link to="/" className="flex-none w-10">
-          <img src={logo} className="w-full" alt="logo" />
+          <img
+            src={theme == "light" ? darkLogo : lightLogo}
+            className="w-full"
+            alt="logo"
+          />
         </Link>
 
         <div
@@ -94,6 +108,18 @@ const Navbar = () => {
             <i className="fi fi-rr-edit"></i>
             <span>Write</span>
           </Link>
+          <button
+            className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10"
+            onClick={changeTheme}
+          >
+            <i
+              className={
+                "fi fi-rr-" +
+                (theme == "light" ? "moon-stars" : "sun") +
+                " text-2xl block mt-1"
+              }
+            ></i>
+          </button>
 
           {access_token ? (
             <>
