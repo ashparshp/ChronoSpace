@@ -68,7 +68,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
           ...notifications,
           results,
           totalDocs: totalDocs - 1,
-          deletedDocCount: notifications.deletedDocCount + 1,
+          deleteDocCount: notifications.deleteDocCount + 1,
         });
       })
       .catch((err) => {
@@ -200,7 +200,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
           <button
             className="underline hover:text-black ml-14 mt-2"
-            onClick={(e) => handleDelete(comment._id, "comment", e.target)}
+            onClick={(e) => handleDelete(comment._id, "reply", e.target)}
           >
             Delete
           </button>

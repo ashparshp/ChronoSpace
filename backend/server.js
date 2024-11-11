@@ -772,7 +772,7 @@ server.post("/add-comment", verifyJWT, (req, res) => {
       blog: _id,
       notification_for: blog_author,
       user: user_id,
-      comments: commentFile._id,
+      comment: commentFile._id,
     };
 
     if (replying_to) {
@@ -867,7 +867,7 @@ const deleteComments = (_id) => {
         { $pull: { children: _id } }
       )
         .then((data) => {
-          console.log("Comment deleted");
+          console.log("Comment deleted from parent");
         })
         .catch((err) => {
           console.log(err.message);
@@ -882,7 +882,7 @@ const deleteComments = (_id) => {
         console.log(err.message);
       });
 
-    Notification.findOneAndUpdate({ reply: _id }, { $unset: { reply: 1 } })
+    Notification.findOneAndUpdate({ reply: _id }, { $unset: { reply: "" } })
       .then(() => {
         console.log("reply notification deleted");
       })
