@@ -15,7 +15,6 @@ import User from "./Schema/User.js";
 import Blog from "./Schema/Blog.js";
 import Notification from "./Schema/Notification.js";
 import Comment from "./Schema/Comment.js";
-import { populate } from "dotenv";
 
 const server = express();
 let PORT = 3000;
@@ -734,7 +733,7 @@ server.post("/isliked-by-user", verifyJWT, (req, res) => {
 server.post("/add-comment", verifyJWT, (req, res) => {
   let user_id = req.user;
 
-  let { _id, comment, blog_author, replying_to } = req.body;
+  let { _id, comment, blog_author, replying_to, notification_id } = req.body;
 
   if (!comment.length) {
     return res.status(403).json({ error: "Write something to comment" });
@@ -785,6 +784,15 @@ server.post("/add-comment", verifyJWT, (req, res) => {
       ).then((replyingToCommentDoc) => {
         notificationObj.notification_for = replyingToCommentDoc.commented_by;
       });
+
+      if (notification_id) {
+        Notification.findOneAndUpdate(
+          { _id: notification_id },
+          { reply: commentFile._id }
+        ).then(() => {
+          console.log("Reply notification updated");
+        });
+      }
     }
 
     new Notification(notificationObj)
@@ -866,7 +874,7 @@ const deleteComments = (_id) => {
         });
     }
 
-    Notification.findOneAndDelete({ comments: _id })
+    Notification.findOneAndDelete({ comment: _id })
       .then(() => {
         console.log("Notification deleted");
       })
@@ -874,7 +882,7 @@ const deleteComments = (_id) => {
         console.log(err.message);
       });
 
-    Notification.findOneAndDelete({ reply: _id })
+    Notification.findOneAndUpdate({ reply: _id }, { $unset: { reply: 1 } })
       .then(() => {
         console.log("reply notification deleted");
       })
@@ -943,7 +951,7 @@ server.post("/notifications", verifyJWT, (req, res) => {
 
   let { page, filter, deletedDocCount } = req.body;
 
-  let maxLimit = 5;
+  let maxLimit = 10;
 
   let findQuery = {
     notification_for: user_id,
@@ -974,6 +982,13 @@ server.post("/notifications", verifyJWT, (req, res) => {
     .sort({ createdAt: -1 })
     .select("createdAt type seen reply")
     .then((notifications) => {
+      Notification.updateMany(findQuery, { seen: true })
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .then(() => {
+          console.log("Notifications seen");
+        });
+
       return res.status(200).json({ notifications });
     })
     .catch((err) => {

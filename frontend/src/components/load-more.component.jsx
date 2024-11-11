@@ -1,9 +1,11 @@
-const LoadMoreDataBtn = ({ state, fetchedDataFun }) => {
+const LoadMoreDataBtn = ({ state, fetchedDataFun, additionalParam }) => {
   if (state != null && state.totalDocs > state.results.length) {
     return (
       <button
         className="text-dark-grey py-2 px-3 hover:bg-grey/30 round-md flex items-center gap-2"
-        onClick={() => fetchedDataFun({ page: state.page + 1 })}
+        onClick={() =>
+          fetchedDataFun({ ...additionalParam, page: state.page + 1 })
+        }
       >
         Load More
       </button>
