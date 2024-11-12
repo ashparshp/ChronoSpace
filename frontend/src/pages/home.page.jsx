@@ -9,6 +9,8 @@ import { activeTabRef } from "../components/inpage-navigation.component";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreDataBtn from "../components/load-more.component";
+import { useContext } from "react";
+import { ThemeContext } from "../App";
 
 const HomePage = () => {
   let [blogs, setBlog] = useState(null);
@@ -26,6 +28,8 @@ const HomePage = () => {
     "social media",
     "travel",
   ];
+
+  let { theme, setTheme } = useContext(ThemeContext);
 
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -107,9 +111,13 @@ const HomePage = () => {
 
   return (
     <AnimationWrapper>
-      <section className="h-cover flex justify-center gap-10">
-        {/* latest blogs */}
-        <div className="w-full">
+      <section
+        className={`h-cover flex justify-center gap-10 px-5 py-10 ${
+          theme === "dark" ? "customDark" : "bg-gray-100"
+        }`}
+      >
+        {/* Main blog list section */}
+        <div className="w-full bg-white p-6 rounded-lg shadow-md">
           <InPageNavigation
             routes={[pageState, "trending blogs"]}
             defaultHidden={["trending blogs"]}
@@ -161,8 +169,8 @@ const HomePage = () => {
           </InPageNavigation>
         </div>
 
-        {/* filters and trending blogs */}
-        <div className="min-w-[300px] lg:min-w-[400px] max-w-min border-1 border-grey pl-8 pt-3 max-md:hidden">
+        {/* Sidebar section */}
+        <div className="min-w-[300px] lg:min-w-[400px] max-w-min border border-gray-300 p-6 rounded-lg bg-white shadow-md max-md:hidden">
           <div className="flex flex-col gap-8">
             {/* Stories from all interests section */}
             <div>
