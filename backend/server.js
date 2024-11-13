@@ -1100,6 +1100,16 @@ server.post("/delete-blog", verifyJWT, (req, res) => {
   }
 });
 
+server.get("/ping", (req, res) => {
+  res.status(200).send("Pong");
+});
+
+setInterval(() => {
+  fetch(`http://localhost:${PORT}/ping`)
+    .then(() => console.log("Self-pinged to prevent sleep"))
+    .catch((err) => console.log("Self-ping error:", err.message));
+}, 5 * 60 * 1000);
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
