@@ -19,7 +19,8 @@ export const UserContext = createContext({});
 
 export const ThemeContext = createContext({});
 
-const darkThemePreference = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
+const darkThemePreference = () =>
+  window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 const App = () => {
   const [userAuth, setUserAuth] = useState({});
@@ -54,6 +55,26 @@ const App = () => {
       document.body.setAttribute("data-theme", theme);
     }
   }, []);
+
+  const pingInterval = 30 * 1000;
+
+  function startSelfPing() {
+    setInterval(() => {
+      fetch(`${import.meta.env.VITE_SERVER_DOMAIN}/ping`)
+        .then((response) => {
+          if (response.ok) {
+            console.log("");
+          } else {
+            console.log("Self-ping failed with status:", response.status);
+          }
+        })
+        .catch((error) => {
+          console.log("Self-ping error:", error.message);
+        });
+    }, pingInterval);
+  }
+
+  startSelfPing();
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
