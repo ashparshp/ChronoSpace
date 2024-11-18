@@ -70,10 +70,10 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar z-50">
-        <Link to="/" className="flex-none w-10">
+        <Link to="/" className="flex-none w-20">
           <img
             src={theme == "light" ? darkLogo : lightLogo}
-            className="w-full"
+            className="w-full md:-ml-4 lg:-ml-10"
             alt="logo"
           />
         </Link>

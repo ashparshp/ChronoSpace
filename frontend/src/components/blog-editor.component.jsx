@@ -171,10 +171,10 @@ const BlogEditor = () => {
   return (
     <>
       <nav className="navbar">
-        <Link to="/" className="flex-none h-8">
+        <Link to="/" className="flex-none w-20">
           <img
             src={theme == "light" ? darkLogo : lightLogo}
-            className="w-full mt-1"
+            className="w-[120%] md:-ml-4 lg:-ml-10"
           />
         </Link>
         <p className="max-md:hidden text-black blog-title line-clamp-1 w-full">
