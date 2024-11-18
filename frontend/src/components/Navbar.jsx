@@ -7,6 +7,7 @@ import { ThemeContext, UserContext } from "../App.jsx";
 import UserNavigationPanel from "./user-navigation.component.jsx";
 import axios from "axios";
 import { storeInSession } from "../common/session.jsx";
+import { SunIcon, MoonIcon } from "@heroicons/react/20/solid";
 
 const Navbar = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -108,7 +109,6 @@ const Navbar = () => {
           >
             <i className="fi fi-rr-search text-xl"></i>
           </button>
-
           {isAdmin ? (
             <Link to="/editor" className="hidden md:flex gap-2 link">
               <i className="fi fi-rr-edit"></i>
@@ -118,16 +118,14 @@ const Navbar = () => {
             ""
           )}
           <button
-            className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10"
+            className="w-12 h-12 rounded-full bg-grey relative flex items-center justify-center hover:bg-black/10"
             onClick={changeTheme}
           >
-            <i
-              className={
-                "fi fi-rr-" +
-                (theme == "light" ? "moon-stars" : "sun") +
-                " text-2xl block mt-1"
-              }
-            ></i>
+            {theme === "light" ? (
+              <MoonIcon className="w-8 h-8 text-2xl" />
+            ) : (
+              <SunIcon className="w-8 h-8 text-2xl" />
+            )}
           </button>
 
           {access_token ? (
