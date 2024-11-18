@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import lightPageNotFoundImage from "../imgs/404-light.png";
 import darkPageNotFoundImage from "../imgs/404-dark.png";
-import lightFullLogo from "../imgs/full-logo-light.png";
-import darkFullLogo from "../imgs/full-logo-dark.png";
+import lightFullLogo from "../imgs/logo-light.svg";
+import darkFullLogo from "../imgs/logo-dark.svg";
 import { ThemeContext } from "../App";
 import { useContext } from "react";
 
