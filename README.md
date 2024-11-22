@@ -32,22 +32,20 @@ Usage
 
 ### **1. Login Page**  
 ![Login Page Placeholder](./screenshots/login.png)
-
-)  
 _A secure login page with Firebase Auth and JWT support._  
 
 ### **2. Signup Page**  
-![Signup Page Placeholder](https://via.placeholder.com/800x400?text=Signup+Page)  
+![Signup Page Placeholder](./screenshots/signup.png)  
 _A signup page with validation for email, password, and more._  
 
 ### **3. Home Screen**  
-![Home Screen Placeholder](https://via.placeholder.com/800x400?text=Home+Screen)  
+![Home Screen Placeholder](./screenshots/homepage.png)  
 _Features trending blogs, recommendations, and responsive design._  
 
 ### **4. Blog Page**  
-![Blog Page Placeholder](https://via.placeholder.com/800x400?text=Blog+Page)  
+![Blog Page Placeholder](./screenshots/blog.png)  
 _Shows detailed blog content, comments, and nested replies._  
 
 ### **5. Notifications Page**  
-![Notifications Placeholder](https://via.placeholder.com/800x400?text=Notifications)  
+![Notifications Placeholder](./screenshots/notifications.png)  
 _Real-time notifications for likes, comments, and activity._  
