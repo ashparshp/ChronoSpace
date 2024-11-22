@@ -31,7 +31,10 @@ Usage
 # **Screenshots**  
 
 ### **1. Login Page**  
-![Login Page Placeholder](https://via.placeholder.com/800x400?text=Login+Page)  
+![Login Page Placeholder](https://via.placeholder.com/800x400?text=Login+Page
+![Uploading logo-light.svg…]()
+
+)  
 _A secure login page with Firebase Auth and JWT support._  
 
 ### **2. Signup Page**  
