@@ -1,7 +1,7 @@
 Chronospace: [Visit](https://chronospace.netlify.app/)
 
-A MERN-based blogging platform inspired by MDN blogs, built as a React course project for college.
-
+	• A MERN-based blogging platform inspired by MDN blogs, built as a React course
+	  project for college.
 Features
 
 	•	User roles: Admin and normal users.
