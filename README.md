@@ -1,4 +1,4 @@
-Chronospace: [Visit](https://chronospace.netlify.app/)
+[Chronospace](https://chronospace.netlify.app/)
 
 	• A MERN-based blogging platform inspired by MDN blogs, built as a React course
 	  project for college.
