@@ -14,6 +14,7 @@ Technologies Used
 	• Frontend: React, Tailwind CSS
 	• Backend: Express, MongoDB
 	• Authentication: Firebase Auth and JWT
+ 	• Image Storage: Integrated AWS S3 for image storage.
 
 Installation
 
@@ -25,3 +26,26 @@ Usage
 
 	• Start the backend server with npm start.
 	• Launch the frontend with npm run dev.
+
+
+# **Screenshots**  
+
+### **1. Login Page**  
+![Login Page Placeholder](https://via.placeholder.com/800x400?text=Login+Page)  
+_A secure login page with Firebase Auth and JWT support._  
+
+### **2. Signup Page**  
+![Signup Page Placeholder](https://via.placeholder.com/800x400?text=Signup+Page)  
+_A signup page with validation for email, password, and more._  
+
+### **3. Home Screen**  
+![Home Screen Placeholder](https://via.placeholder.com/800x400?text=Home+Screen)  
+_Features trending blogs, recommendations, and responsive design._  
+
+### **4. Blog Page**  
+![Blog Page Placeholder](https://via.placeholder.com/800x400?text=Blog+Page)  
+_Shows detailed blog content, comments, and nested replies._  
+
+### **5. Notifications Page**  
+![Notifications Placeholder](https://via.placeholder.com/800x400?text=Notifications)  
+_Real-time notifications for likes, comments, and activity._  
