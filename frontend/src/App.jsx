@@ -48,11 +48,22 @@ const App = () => {
 
     if (themeInSession) {
       setTheme(() => {
-        document.body.setAttribute("data-theme", themeInSession);
-        return themeInSession;
+        const currentTheme = themeInSession;
+        document.body.setAttribute("data-theme", currentTheme);
+        if (currentTheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        return currentTheme;
       });
     } else {
       document.body.setAttribute("data-theme", theme);
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   }, []);
 

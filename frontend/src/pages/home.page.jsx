@@ -29,7 +29,7 @@ const HomePage = () => {
     "travel",
   ];
 
-  let { theme, setTheme } = useContext(ThemeContext);
+  let { theme } = useContext(ThemeContext);
 
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
@@ -111,13 +111,9 @@ const HomePage = () => {
 
   return (
     <AnimationWrapper>
-      <section
-        className={`h-cover flex justify-center gap-10 px-5 py-10 ${
-          theme === "dark" ? "customDark" : "bg-gray-100"
-        }`}
-      >
+      <section className="h-cover flex justify-center gap-10 px-5 py-10 bg-gray-100 dark:bg-gray-900">
         {/* Main blog list section */}
-        <div className="w-full bg-white p-6 rounded-lg shadow-md">
+        <div className="w-full bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <InPageNavigation
             routes={[pageState, "trending blogs"]}
             defaultHidden={["trending blogs"]}
@@ -170,11 +166,11 @@ const HomePage = () => {
         </div>
 
         {/* Sidebar section */}
-        <div className="min-w-[300px] lg:min-w-[400px] max-w-min border border-gray-300 p-6 rounded-lg bg-white shadow-md max-md:hidden">
+        <div className="min-w-[300px] lg:min-w-[400px] max-w-min border border-gray-300 dark:border-gray-700 p-6 rounded-lg bg-white dark:bg-gray-800 shadow-md max-md:hidden">
           <div className="flex flex-col gap-8">
             {/* Stories from all interests section */}
             <div>
-              <h1 className="font-medium text-xl mb-6">
+              <h1 className="font-medium text-xl mb-6 dark:text-gray-200">
                 Stories from all interests
               </h1>
 
@@ -185,8 +181,8 @@ const HomePage = () => {
                     onClick={loadBlogByCategory}
                     className={`tag py-2 px-4 rounded-md font-medium transition-colors ${
                       pageState === category
-                        ? "bg-black text-white"
-                        : "bg-white text-black border border-gray-300"
+                        ? "bg-black text-white dark:bg-gray-700"
+                        : "bg-white dark:bg-gray-700 text-black dark:text-gray-200 border border-gray-300 dark:border-gray-600"
                     }`}
                   >
                     {category}
@@ -197,7 +193,7 @@ const HomePage = () => {
 
             {/* Trending blogs section */}
             <div>
-              <h1 className="font-medium text-xl mb-6">
+              <h1 className="font-medium text-xl mb-6 dark:text-gray-200">
                 Trending <i className="fi fi-rr-arrow-trend-up"></i>
               </h1>
 

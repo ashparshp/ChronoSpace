@@ -100,13 +100,22 @@ const Navbar = () => {
 
     // Update theme in context and local storage
     setTheme(newTheme);
+    
+    // Apply theme to both attribute and class systems
     document.body.setAttribute("data-theme", newTheme);
+    
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
     storeInSession("theme", newTheme);
   };
 
   return (
     <>
-      <nav className="navbar z-50">
+      <nav className="navbar z-50 bg-white dark:bg-gray-900 dark:border-gray-700">
         {/* Logo */}
         <Link to="/" className="flex-none w-20">
           <img
@@ -119,7 +128,7 @@ const Navbar = () => {
         {/* Search Box - Responsive with mobile toggle */}
         <div
           className={
-            "absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] " +
+            "absolute bg-white dark:bg-gray-900 w-full left-0 top-full mt-0.5 border-b border-grey dark:border-gray-700 py-4 px-[5vw] " +
             "md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
             (searchBoxVisibility ? "show" : "hide")
           }
@@ -128,13 +137,13 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search"
-              className="w-full md:w-auto bg-grey 
+              className="w-full md:w-auto bg-grey dark:bg-gray-800 dark:text-gray-200
                 p-4 pl-6 pr-[12%] md:pr-6 rounded-full 
-                placeholder:text-dark-gray 
+                placeholder:text-dark-gray dark:placeholder:text-gray-400
                 md:pl-12"
               onKeyDown={handleSearch}
             />
-            <i className="fi fi-rr-search absolute right-[10%] md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-gray pointer-events-none"></i>
+            <i className="fi fi-rr-search absolute right-[10%] md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-gray dark:text-gray-400 pointer-events-none"></i>
           </div>
         </div>
 
@@ -145,16 +154,16 @@ const Navbar = () => {
         >
           {/* Mobile Search Toggle Button */}
           <button
-            className="md:hidden bg-grey w-12 h-12 rounded-full 
+            className="md:hidden bg-grey dark:bg-gray-800 w-12 h-12 rounded-full 
                 flex items-center justify-center"
             onClick={handleSearchButtonClick}
           >
-            <i className="fi fi-rr-search text-xl"></i>
+            <i className="fi fi-rr-search text-xl dark:text-gray-300"></i>
           </button>
 
           {/* Conditional Admin Write Link */}
           {isAdmin && (
-            <Link to="/editor" className="hidden md:flex gap-2 link">
+            <Link to="/editor" className="hidden md:flex gap-2 link dark:text-gray-300 dark:hover:text-white">
               <i className="fi fi-rr-edit"></i>
               <span>Write</span>
             </Link>
@@ -162,13 +171,13 @@ const Navbar = () => {
 
           {/* Theme Toggle Button */}
           <button
-            className="w-12 h-12 rounded-full bg-grey relative flex items-center justify-center hover:bg-black/10"
+            className="w-12 h-12 rounded-full bg-grey dark:bg-gray-800 relative flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10"
             onClick={changeTheme}
           >
             {theme === "light" ? (
               <MoonIcon className="w-8 h-8 text-2xl" />
             ) : (
-              <SunIcon className="w-8 h-8 text-2xl" />
+              <SunIcon className="w-8 h-8 text-2xl text-yellow-300" />
             )}
           </button>
 
@@ -177,8 +186,8 @@ const Navbar = () => {
             <>
               {/* Notifications Link */}
               <Link to="/dashboard/notifications">
-                <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10">
-                  <i className="fi fi-rr-bell text-2xl block mt-1"></i>
+                <button className="w-12 h-12 rounded-full bg-grey dark:bg-gray-800 relative hover:bg-black/10 dark:hover:bg-white/10">
+                  <i className="fi fi-rr-bell text-2xl block mt-1 dark:text-gray-300"></i>
 
                   {new_notification_available && (
                     <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
@@ -205,10 +214,10 @@ const Navbar = () => {
           ) : (
             // Authentication Links for Logged Out Users
             <>
-              <Link to="/signin" className="btn-light py-2 ">
+              <Link to="/signin" className="btn-light py-2 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
                 Sign In
               </Link>
-              <Link to="/signup" className="btn-dark py-2 hidden md:block">
+              <Link to="/signup" className="btn-dark py-2 hidden md:block dark:bg-gray-700 dark:hover:bg-gray-600">
                 Sign Up
               </Link>
             </>
