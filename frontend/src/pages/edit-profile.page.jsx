@@ -6,7 +6,7 @@ import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/loader.component";
 import { Toaster, toast } from "react-hot-toast";
 import InputBox from "../components/input.component";
-import { uploadImage } from "../common/aws";
+import { uploadImage } from "../common/cloudinary"; // Updated import
 import { storeInSession } from "../common/session";
 
 const EditProfile = () => {
@@ -72,40 +72,46 @@ const EditProfile = () => {
       const loadingToast = toast.loading("Uploading...");
       e.target.setAttribute("disabled", true);
 
-      uploadImage(updatedProfileImg).then((url) => {
-        if (url) {
-          axios
-            .post(
-              import.meta.env.VITE_SERVER_DOMAIN + "/update-profile-img",
-              { url },
-              {
-                headers: {
-                  Authorization: `Bearer ${access_token}`,
-                },
-              }
-            )
-            .then(({ data }) => {
-              const newUserAuth = {
-                ...userAuth,
-                profile_img: data.profile_img,
-              };
+      uploadImage(updatedProfileImg)
+        .then((url) => {
+          if (url) {
+            axios
+              .post(
+                import.meta.env.VITE_SERVER_DOMAIN + "/update-profile-img",
+                { url },
+                {
+                  headers: {
+                    Authorization: `Bearer ${access_token}`,
+                  },
+                }
+              )
+              .then(({ data }) => {
+                const newUserAuth = {
+                  ...userAuth,
+                  profile_img: data.profile_img,
+                };
 
-              storeInSession("user", JSON.stringify(newUserAuth));
+                storeInSession("user", JSON.stringify(newUserAuth));
 
-              setUserAuth(newUserAuth);
-              setUpdatedProfileImg(null);
-              toast.dismiss(loadingToast);
-              e.target.removeAttribute("disabled");
+                setUserAuth(newUserAuth);
+                setUpdatedProfileImg(null);
+                toast.dismiss(loadingToast);
+                e.target.removeAttribute("disabled");
 
-              toast.success("Image uploaded!");
-            })
-            .catch(() => {
-              toast.dismiss(loadingToast);
-              e.target.removeAttribute("disabled");
-              toast.error("Upload failed");
-            });
-        }
-      });
+                toast.success("Image uploaded!");
+              })
+              .catch((err) => {
+                toast.dismiss(loadingToast);
+                e.target.removeAttribute("disabled");
+                toast.error("Upload failed: " + (err.response?.data?.error || err.message));
+              });
+          }
+        })
+        .catch((err) => {
+          toast.dismiss(loadingToast);
+          e.target.removeAttribute("disabled");
+          toast.error("Image upload failed: " + err.message);
+        });
     }
   };
 
@@ -128,7 +134,7 @@ const EditProfile = () => {
     }
 
     if (bio.length > bioLimit) {
-      return toast.error(`Bio must be less than ${maxLength} characters`);
+      return toast.error(`Bio must be less than ${bioLimit} characters`);
     }
 
     const loadingToast = toast.loading("Updating...");

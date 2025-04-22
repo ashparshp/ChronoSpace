@@ -44,12 +44,17 @@ export default {
           900: "#0f172a",
           950: "#020617",
         },
+        purple: "#8b5cf6",
+        grey: "#e2e8f0",
+        "dark-grey": "#64748b",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         heading: ["Plus Jakarta Sans", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
         serif: ["Gelasio", "serif"],
+        inter: ["Inter", "sans-serif"],
+        gelasio: ["Gelasio", "serif"],
       },
       boxShadow: {
         smooth:

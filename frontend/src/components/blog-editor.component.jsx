@@ -4,7 +4,7 @@ import darkLogo from "../imgs/logo-dark.png";
 import AnimationWrapper from "../common/page-animation";
 import lightBanner from "../imgs/blog banner light.png";
 import darkBanner from "../imgs/blog banner dark.png";
-import { uploadImage } from "../common/aws";
+import { uploadImage } from "../common/cloudinary"; // Updated import path
 import { useContext, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { EditorContext } from "../pages/editor.pages";
@@ -62,7 +62,7 @@ const BlogEditor = () => {
         })
         .catch((err) => {
           toast.dismiss(loadingToast);
-          return toast.error(err);
+          return toast.error(err.message || "Upload failed");
         });
     }
   };

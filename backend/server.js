@@ -8,7 +8,7 @@ import cors from "cors";
 import admin from "firebase-admin";
 import serviceAccountKey from "./chronospace-3d550-firebase-adminsdk-p6xp9-aa51c14c21.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
-import aws from "aws-sdk";
+import { v2 as cloudinary } from 'cloudinary';
 
 // Importing schema
 import User from "./Schema/User.js";
@@ -33,23 +33,29 @@ mongoose.connect(process.env.DB_LOCATION, {
   autoIndex: true,
 });
 
-// setting up aws s3 bucket
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: "eu-north-1",
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
 });
 
-const generateUploadURL = async () => {
-  const date = new Date();
-  const imageName = `${nanoid()}-${date.getTime()}.jpeg`;
-
-  return await s3.getSignedUrlPromise("putObject", {
-    Bucket: "chronospace",
-    Key: imageName,
-    Expires: 2000,
-    ContentType: "image/jpeg",
-  });
+const generateUploadSignature = async () => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const folder = "chronospace";
+  
+  const signature = cloudinary.utils.api_sign_request({
+    timestamp: timestamp,
+    folder: folder
+  }, process.env.CLOUDINARY_API_SECRET);
+  
+  return {
+    signature,
+    timestamp,
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    folder
+  };
 };
 
 const verifyJWT = (req, res, next) => {
@@ -99,8 +105,8 @@ const generateUsername = async (email) => {
 };
 
 server.get("/get-upload-url", (req, res) => {
-  generateUploadURL()
-    .then((url) => res.status(200).json({ uploadURL: url }))
+  generateUploadSignature()
+    .then((uploadCredentials) => res.status(200).json(uploadCredentials))
     .catch((err) => {
       console.log(err.message);
       res.status(500).json({ error: err.message });
